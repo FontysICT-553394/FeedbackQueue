@@ -15,7 +15,7 @@ on:
 jobs:
   backend:
     name: Backend Build & Test
-    runs-on: ubuntu-latest # GitHub Runner (instead of my own like on gitlab)
+    runs-on: ubuntu-latest # GitHub Runner (instead of my own like on GitLab)
     defaults:
       run:
       # The backend folder, with all the code
