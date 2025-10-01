@@ -1,0 +1,36 @@
+name: PR Backend - Testing - CI
+
+# Trigger the workflow on:
+#  Pull requests into main or release branches
+#  Pushes directly to dev/backend or dev/frontend
+on:
+  pull_request:
+    branches:
+      - main
+      - release/*
+  push:
+    branches:
+      - dev/backend
+
+jobs:
+  backend:
+    name: Backend Build & Test
+    runs-on: ubuntu-latest # GitHub Runner (instead of my own like on gitlab)
+    defaults:
+      run:
+      # The backend folder, with all the code
+        working-directory: FQ-Backend
+    steps:
+      # Uses github methods to checkout all the code in the working dir
+      - uses: actions/checkout@v4
+
+      # Uses githubs methods to setup java
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      # Build project and run all tests
+      - name: Build & Test
+        run: ./gradlew clean build --no-daemon
