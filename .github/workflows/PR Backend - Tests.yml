@@ -24,7 +24,7 @@ jobs:
       # Uses github methods to checkout all the code in the working dir
       - uses: actions/checkout@v4
 
-      # Uses githubs methods to setup java
+      # Uses GitHub's methods to set up Java
       - name: Set up JDK 21
         uses: actions/setup-java@v4
         with:
