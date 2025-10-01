@@ -2,7 +2,7 @@ name: PR Backend - Testing - CI
 
 # Trigger the workflow on:
 #  Pull requests into main or release branches
-#  Pushes directly to dev/backend or dev/frontend
+#  Pushes directly to dev/backend
 on:
   pull_request:
     branches:
