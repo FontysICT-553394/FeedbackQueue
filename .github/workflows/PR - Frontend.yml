@@ -1,0 +1,45 @@
+name: PR Frontend - Testing - CI
+
+# Trigger on:
+#  Pull requests in main or release branch
+#  Pushes to dev/frontend
+on:
+  pull_request:
+    branches:
+      - main
+      - release/*
+  push:
+    branches:
+      - dev/frontend
+
+jobs:
+  frontend:
+    name: Frontend Build & Test
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        # The frontend folder
+        working-directory: FQ-Frontend
+    steps:
+      - uses: actions/checkout@v4
+
+      # Set up Node
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          # This will cache node_modules to speed up runs
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      # Check for code style issues
+      - name: Lint
+        run: npm run lint
+
+      - name: Run Unit Tests
+        run: npm run test
+        
+      - name: Build Frontend
+        run: npm run build
