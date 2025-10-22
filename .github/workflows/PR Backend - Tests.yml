@@ -26,6 +26,8 @@ jobs:
       CORS_ORIGIN: ${{ secrets.CORS_ORIGIN }}
       CORS_METHODS: ${{ secrets.CORS_METHODS }}
       CORS_HEADERS: ${{ secrets.CORS_HEADERS }}
+      JWT_SECRET: ${{ secrets.JWT_SECRET }}
+      JWT_EXPIRATION: ${{ secrets.JWT_EXPIRATION }}
     
     defaults:
       run:
