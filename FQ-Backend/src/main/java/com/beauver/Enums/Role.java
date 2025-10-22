@@ -1,7 +1,8 @@
 package com.beauver.Enums;
 
-public enum Role {
+import jakarta.persistence.Enumerated;
 
+public enum Role {
     STUDENT,
     TEACHER
 
