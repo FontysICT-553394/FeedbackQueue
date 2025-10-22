@@ -13,6 +13,17 @@ val quarkusPlatformArtifactId: String by project
 val quarkusPlatformVersion: String by project
 
 dependencies {
+    implementation("io.quarkus:quarkus-jdbc-postgresql")
+    implementation("io.quarkus:quarkus-hibernate-orm-panache")
+    implementation("com.google.code.gson:gson:2.13.2")
+
+    implementation("io.jsonwebtoken:jjwt-api:0.11.5")
+    runtimeOnly("io.jsonwebtoken:jjwt-impl:0.11.5")
+    runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.11.5")
+
+    implementation("org.projectlombok:lombok:0.11.0")
+    implementation("io.quarkus:quarkus-elytron-security-jdbc")
+
     implementation(enforcedPlatform("${quarkusPlatformGroupId}:${quarkusPlatformArtifactId}:${quarkusPlatformVersion}"))
     implementation("io.quarkus:quarkus-arc")
     implementation("io.quarkus:quarkus-rest")

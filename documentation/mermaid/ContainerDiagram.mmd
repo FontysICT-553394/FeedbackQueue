@@ -1,0 +1,38 @@
+C4Container
+    title Container Diagram for Feedback Queue
+
+    Person(student, "Student", "Joins queues, checks position, receives feedback.")
+    Person(teacher, "Teacher", "Creates and manages queues, gives feedback.")
+
+    System_Boundary(feedbackQueue, "Feedback Queue System") {
+        Container(frontend, "Frontend (Nuxt.js)", "Nuxt.js App", "Web UI for teachers and students")
+        Container(backend, "Backend (Quarkus)", "Java Quarkus Service", "Handles business logic, authentication, queue management, API")
+
+        ContainerDb(db, "Postgres Database", "Relational DB", "Stores accounts, queue data, feedback history, etc.")
+        ContainerDb(redis, "Redis", "In-memory DB", "Caching, rate limiting, fast access (e.g. next in queue)")
+    }
+
+    System_Ext(emailService, "Email Service", "External service used for account verification & notifications")
+
+    %% Relationships
+    Rel(student, frontend, "Views/Uses", "HTTPS/HTTP")
+    Rel(teacher, frontend, "Views/Uses", "HTTPS/HTTP")
+
+    Rel(frontend, backend, "API calls", "REST/JSON")
+    Rel(backend, db, "Reads/Writes", "JDBC/Postgres")
+    Rel(backend, redis, "Reads/Writes", "Redis protocol")
+    Rel(backend, emailService, "Sends verification emails", "SMTP/HTTP")
+
+    %% Styling
+    UpdateElementStyle(frontend, $bgColor="lightblue", $borderColor="blue")
+    UpdateElementStyle(backend, $bgColor="orange", $borderColor="orange")
+    UpdateElementStyle(db, $bgColor="lightgreen", $borderColor="green")
+    UpdateElementStyle(redis, $bgColor="lightpink", $borderColor="red")
+    UpdateElementStyle(emailService, $bgColor="lightgrey", $borderColor="darkgrey")
+
+    UpdateRelStyle(frontend, backend, $textColor="black", $lineColor="blue")
+    UpdateRelStyle(backend, db, $textColor="black", $lineColor="green")
+    UpdateRelStyle(backend, redis, $textColor="black", $lineColor="red")
+    UpdateRelStyle(backend, emailService, $textColor="black", $lineColor="darkgrey", $offsetY="-20")
+
+    UpdateLayoutConfig($c4ShapeInRow="3", $c4BoundaryInRow="1")

@@ -1,0 +1,42 @@
+C4Component
+    title Backend Component Diagram for Feedback Queue
+
+    Boundary(backend, "Backend (Quarkus)", "Handles business logic, API, and data access") {
+        Component(userMgmt, "User Management", "Handles user accounts, authentication, roles, and profile info")
+        Component(queueMgmt, "Queue Management", "Handles creation, progression, and tracking of feedback queues")
+        Component(notification, "Notification Service", "Sends emails for verification and notifications")
+        Component(persistence, "Persistence Layer", "Handles Postgres database interactions (queues, users, feedback history)")
+        Component(cache, "Cache Layer", "Handles Redis caching for next-in-queue, rate-limiting, and other ephemeral data")
+    }
+
+    System_Ext(emailService, "Email Service", "External service for sending verification & notification emails")
+    Component(frontEnd, "Front End (Nuxt.JS)", "", "The UI for the user")
+    ContainerDb(redis, "Redis", "Caching, fast queue data access")
+    ContainerDb(db, "Postgres Database", "Stores accounts, queues, feedback history")
+
+    %% Relationships
+    Rel(userMgmt, persistence, "Reads/Writes", "SQL")
+    Rel(queueMgmt, persistence, "Reads/Writes", "SQL")
+    Rel(queueMgmt, cache, "Reads/Writes", "Redis protocol")
+    Rel(cache, redis, "Frontend uses this to interact with backend", "REST/JSON API")
+    Rel(persistence, db, "Frontend uses this to interact with backend", "REST/JSON API")
+    Rel(userMgmt, emailService, "Send verification email", "SMPT/HTTP")
+    Rel(queueMgmt, notification, "", "")
+    Rel(notification, frontEnd, "Send web-notification to user", "REST/JSON")
+
+    %% Styling
+    UpdateElementStyle(userMgmt, $bgColor="lightblue", $borderColor="blue")
+    UpdateElementStyle(queueMgmt, $bgColor="orange", $borderColor="orange")
+    UpdateElementStyle(notification, $bgColor="lightgray", $borderColor="gray")
+    UpdateElementStyle(cache, $bgColor="lightpink", $borderColor="red")
+    UpdateElementStyle(persistence, $bgColor="lightgreen", $borderColor="darkgreen")
+    UpdateElementStyle(emailService, $bgColor="lightgrey", $borderColor="darkgrey")
+    UpdateElementStyle(db, $bgColor="lightgreen", $borderColor="green")
+    UpdateElementStyle(redis, $bgColor="lightpink", $borderColor="red")
+
+    UpdateRelStyle(userMgmt, persistence, $textColor="black", $lineColor="green")
+    UpdateRelStyle(queueMgmt, persistence, $textColor="black", $lineColor="green")
+    UpdateRelStyle(queueMgmt, cache, $textColor="black", $lineColor="red")
+    UpdateRelStyle(notification, emailService, $textColor="black", $lineColor="darkgrey")
+
+    UpdateLayoutConfig($c4ShapeInRow="3", $c4BoundaryInRow="1")
