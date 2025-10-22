@@ -1,12 +1,16 @@
 package com.beauver.Classes;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
+import jakarta.persistence.*;
 
-import java.util.Dictionary;
+import java.util.ArrayList;
+import java.util.List;
 
+@Entity
+@Table(name = "queues")
 public class Queue extends PanacheEntity {
-
     public String name;
-    public Dictionary<Integer, User> queue;
 
+    @OneToMany
+    public List<User> users = new ArrayList<>();
 }
