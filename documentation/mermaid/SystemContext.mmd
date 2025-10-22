@@ -1,0 +1,26 @@
+C4Context
+    title System Context Diagram for Feedback Queue
+
+    Boundary(b0, "Feedback Queue") {
+        Person(student, "Student", "Joins a queue to get feedback from teachers.")
+        Person(teacher, "Teacher", "Creates and manages queues for giving feedback.")
+
+        System(feedbackQueue, "Feedback Queue System", "Digital system to manage feedback queues between students and teachers.")
+
+        System_Ext(emailService, "Email Service", "External service used for verification and notifications.")
+    }
+
+    Rel(student, feedbackQueue, "Joins queue, views position")
+    Rel(teacher, feedbackQueue, "Creates and manages queues")
+    Rel(feedbackQueue, emailService, "Sends verification & notification emails")
+
+    UpdateElementStyle(student, $bgColor="lightblue", $fontColor="black", $borderColor="blue")
+    UpdateElementStyle(teacher, $bgColor="lightgreen", $fontColor="black", $borderColor="green")
+    UpdateElementStyle(feedbackQueue, $bgColor="lightyellow", $fontColor="black", $borderColor="orange")
+    UpdateElementStyle(emailService, $bgColor="lightgrey", $fontColor="black", $borderColor="darkgrey")
+
+    UpdateRelStyle(student, feedbackQueue, $textColor="blue", $lineColor="blue")
+    UpdateRelStyle(teacher, feedbackQueue, $textColor="green", $lineColor="green")
+    UpdateRelStyle(feedbackQueue, emailService, $textColor="black", $lineColor="darkgrey", $offsetY="-20")
+
+    UpdateLayoutConfig($c4ShapeInRow="2", $c4BoundaryInRow="1")
