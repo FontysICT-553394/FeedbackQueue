@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <h1>Hai Test</h1>
+  <NuxtLink to="/account/register">Register</NuxtLink>
 
-  </div>
 </template>
