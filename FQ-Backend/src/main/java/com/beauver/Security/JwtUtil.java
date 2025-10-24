@@ -1,5 +1,7 @@
 package com.beauver.Security;
 
+import com.beauver.Classes.Result;
+import com.beauver.Enums.StatusCodes;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -39,6 +41,15 @@ public class JwtUtil {
                 .setExpiration(exp)
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
+    }
+
+    public String getIdFromHeader(String authorization){
+        if (authorization == null || !authorization.startsWith("Bearer ")) {
+            return new Result<>(StatusCodes.UNAUTHORIZED).toJson();
+        }
+
+        String token = authorization.substring("Bearer ".length());
+        return getIdFromToken(token);
     }
 
     public String getIdFromToken(String token) {

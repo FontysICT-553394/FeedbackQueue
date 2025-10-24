@@ -3,6 +3,7 @@ package com.beauver.Endpoints;
 import com.beauver.Classes.Result;
 import com.beauver.Classes.User;
 import com.beauver.Enums.StatusCodes;
+import com.beauver.Security.JwtUtil;
 import com.beauver.Security.VerifyJwt;
 import com.beauver.Services.UserService;
 import com.google.gson.Gson;
@@ -17,8 +18,8 @@ import jakarta.ws.rs.core.MediaType;
 @Consumes(MediaType.APPLICATION_JSON)
 public class UserAPI {
 
-    @Inject
-    UserService userService;
+    @Inject UserService userService;
+    @Inject JwtUtil jwtUtil;
 
     @GET
     @Path("/getAll")
@@ -28,8 +29,20 @@ public class UserAPI {
         return new Result<>(StatusCodes.OK, User.listAll()).toJson();
     }
 
+    @GET
+    @Path("/getYourself")
+    @VerifyJwt
+    @RunOnVirtualThread
+    public String getUser(@HeaderParam("Authorization") String authorization) {
+        String userId = jwtUtil.getIdFromHeader(authorization);
+
+        User user = User.findById(userId);
+        user.password = null; // Hide password
+        return new Result<>(StatusCodes.OK, user).toJson();
+    }
+
     @POST
-    @Path("/logIn")
+    @Path("/login")
     @Transactional
     @RunOnVirtualThread
     public String logIn(String json){
