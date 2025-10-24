@@ -14,6 +14,13 @@ import java.util.Date;
 import static io.jsonwebtoken.security.Keys.hmacShaKeyFor;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
+/**
+ * This utility class handles JWT token generation, validation and getting the ID again.
+ * This class must be injected with @Inject!
+ *
+ * @author Beau
+ * @see VerifyJwt
+ */
 @Singleton
 public class JwtUtil {
 

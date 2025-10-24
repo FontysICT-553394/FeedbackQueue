@@ -7,6 +7,13 @@ import io.quarkus.elytron.security.common.BcryptUtil;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
+/**
+ * This service handles user login and registration business logic
+ *
+ * @author Beau
+ * @see UserRepo
+ * @see JwtUtil
+ */
 @ApplicationScoped
 public class UserService {
 
