@@ -90,4 +90,15 @@ public class UserAPI {
         return new Result<>(StatusCodes.CREATED).toJson();
     }
 
+    @GET
+    @Path("/getYourself")
+    @VerifyJwt
+    @RunOnVirtualThread
+    public String getUser(@HeaderParam("Authorization") String authorization) {
+        String userId = jwtUtil.getIdFromHeader(authorization);
+
+        User user = User.findById(userId);
+        user.password = null; // Hide password
+        return new Result<>(StatusCodes.OK, user).toJson();
+    }
 }
