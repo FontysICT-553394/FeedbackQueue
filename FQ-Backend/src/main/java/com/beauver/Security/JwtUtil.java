@@ -23,6 +23,12 @@ public class JwtUtil {
     @ConfigProperty(name = "jwt.expiration")
     long expirationMs;
 
+    @ConfigProperty(name = "jwt.refreshSecret")
+    String refreshSecret;
+
+    @ConfigProperty(name = "jwt.refreshExpiration")
+    long refreshExpirationMs;
+
     private SecretKey getSigningKey() {
         if (secret == null || secret.trim().isEmpty()) {
             throw new IllegalArgumentException("jwt.secret must be provided");
@@ -65,6 +71,46 @@ public class JwtUtil {
     public boolean validateToken(String token) {
         try {
             SecretKey key = getSigningKey();
+            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    private SecretKey getRefreshSigningKey() {
+        if (refreshSecret == null || refreshSecret.trim().isEmpty()) {
+            throw new IllegalArgumentException("jwt.refreshSecret must be provided");
+        }
+        return hmacShaKeyFor(refreshSecret.getBytes(UTF_8));
+    }
+
+    public String generateRefreshToken(String id) {
+        Date now = new Date();
+        Date exp = new Date(now.getTime() + refreshExpirationMs);
+
+        SecretKey key = getRefreshSigningKey();
+        return Jwts.builder()
+                .setSubject(id)
+                .setIssuedAt(now)
+                .setExpiration(exp)
+                .signWith(key, SignatureAlgorithm.HS256)
+                .compact();
+    }
+
+    public String getIdFromRefreshToken(String token) {
+        SecretKey key = getRefreshSigningKey();
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+        return claims.getSubject();
+    }
+
+    public boolean validateRefreshToken(String token) {
+        try {
+            SecretKey key = getRefreshSigningKey();
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
             return true;
         } catch (Exception e) {
