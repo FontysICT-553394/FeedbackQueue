@@ -10,30 +10,21 @@ export function GetMyAccount() {
         e.preventDefault()
 
         error.value = null
+        const { $api } = useNuxtApp()
 
-        const config = useRuntimeConfig()
-        const baseLink = config.public.baseURL ?? ''
+        try {
+            const data: any = await $api("users/getYourself")
 
-        const {data, error: fetchError}
-            = await useFetch(baseLink + "users/getYourself", {
-            method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem('jwtToken')}`
-            }
-        })
-
-        if (fetchError.value) {
-            error.value = 'Get account failed'
-            console.error(fetchError.value)
-        } else {
-
-            if(data.value?.status == 200) {
+            if(data?.status == 200) {
                 success.value = true
-                username.value = data.value.data.name
-                role.value = data.value.data.role
-            }else{
-                error.value = data.value?.error || 'Failed to get info'
+                username.value = data.data.data.name
+                role.value = data.data.data.role
+            } else {
+                error.value = data?.error || 'Failed to get info'
             }
+        } catch (fetchError) {
+            error.value = 'Get account failed'
+            console.error(fetchError)
         }
     }
 

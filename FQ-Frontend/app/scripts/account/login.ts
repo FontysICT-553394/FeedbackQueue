@@ -1,6 +1,7 @@
 import { ref } from 'vue'
 
 export function Login() {
+    const { $api } = useNuxtApp()
     const email = ref('')
     const password = ref('')
 
@@ -11,28 +12,25 @@ export function Login() {
         e.preventDefault()
         error.value = null
 
-        const config = useRuntimeConfig()
-        const baseLink = config.public.baseURL ?? ''
-
-        const {data, error: fetchError}
-            = await useFetch(baseLink + "users/login", {
-            method: 'POST',
-            body: {
+        try {
+            const response: any = await $api.post("users/logIn", {
                 email: email.value,
                 password: password.value
-            }
-        })
+            })
 
-        if (fetchError.value) {
-            error.value = 'Login failed'
-            console.error(fetchError.value)
-        } else {
-            if(data.value?.status == 200) {
+            if (response?.status === 200) {
                 success.value = true
-                localStorage.setItem('jwtToken', data.value.data)
-            }else{
-                error.value = data.value?.error || 'Login failed'
+
+                const tokens = response.data.data
+
+                localStorage.setItem('accessToken', tokens.accessToken)
+                localStorage.setItem('refreshToken', tokens.refreshToken)
+            } else {
+                error.value = response?.data?.error || 'Login failed'
             }
+        } catch (fetchError) {
+            error.value = 'Login failed'
+            console.error(fetchError)
         }
     }
 
