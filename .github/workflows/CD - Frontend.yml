@@ -40,4 +40,3 @@ jobs:
           push: true
           tags: |
             ghcr.io/fq-frontend:latest
-            ghcr.io/fq-frontend:${{ github.event.workflow_run.head_branch && github.event.workflow_run.head_branch.replace('/', '-') }}
