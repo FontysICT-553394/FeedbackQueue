@@ -1,4 +1,4 @@
-name: PR Backend - Testing - CI
+name: CI Backend
 
 # Trigger the workflow on:
 #  Pull requests into main or release branches
