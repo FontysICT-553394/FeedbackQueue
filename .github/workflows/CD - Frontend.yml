@@ -8,9 +8,10 @@ on:
 
 jobs:
   deploy:
+    # This job will only run if the CI succeeded AND the branch is a release branch
     if: >
-      ${{ github.event.workflow_run.conclusion == 'success' &&
-          startsWith(github.event.workflow_run.head_branch, 'release/') }}
+      github.event.workflow_run.conclusion == 'success' &&
+      startsWith(github.event.workflow_run.head_branch, 'release/')
     runs-on: ubuntu-latest
 
     permissions:
@@ -29,7 +30,7 @@ jobs:
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
-          password: ${{ secrets.GHCR_TOKEN }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v6
