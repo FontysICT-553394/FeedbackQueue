@@ -1,6 +1,7 @@
 import { ref } from 'vue'
 
 export function Register() {
+    const { $api } = useNuxtApp()
     const username = ref('')
     const email = ref('')
     const password = ref('')
@@ -15,10 +16,9 @@ export function Register() {
         const config = useRuntimeConfig()
         const baseLink = config.public.baseURL ?? ''
 
-        const { data, error: fetchError }
-            = await useFetch(baseLink + "users/register", {
+        const data: any = await $api("users/register", {
             method: 'POST',
-            body: {
+            data: {
                 name: username.value,
                 email: email.value,
                 password: password.value,
@@ -26,16 +26,11 @@ export function Register() {
             }
         })
 
-        if (fetchError.value) {
-            error.value = 'Registration failed'
-            console.error(fetchError.value)
-        } else {
-            if(data.value?.status == 200) {
-                success.value = true
-                console.log('Success:', data.value)
-            }else{
-                error.value = data.value?.error || 'Registration failed'
-            }
+        if(data.value?.status == 200) {
+            success.value = true
+            console.log('Success:', data.value)
+        }else{
+            error.value = data.value?.error || 'Registration failed'
         }
     }
 

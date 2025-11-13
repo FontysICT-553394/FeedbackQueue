@@ -1,4 +1,4 @@
-name: PR Frontend - Testing - CI
+name: CI Frontend
 
 # Trigger on:
 #  Pull requests in main or release branch
