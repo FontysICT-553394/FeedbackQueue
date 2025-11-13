@@ -2,13 +2,15 @@ name: CD - Frontend
 
 on:
   workflow_run:
-    workflows: ["CI - Frontend"]
+    workflows: ["CI Frontend"]
     types:
       - completed
 
 jobs:
   deploy:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    if: >
+      ${{ github.event.workflow_run.conclusion == 'success' &&
+          startsWith(github.event.workflow_run.head_branch, 'release/') }}
     runs-on: ubuntu-latest
 
     permissions:
@@ -35,4 +37,6 @@ jobs:
           context: ./FQ-Frontend
           file: ./FQ-Frontend/Dockerfile
           push: true
-          tags: ghcr.io/${{ github.repository_owner }}/fq-frontend:latest
+          tags: |
+            ghcr.io/${{ github.repository_owner }}/fq-frontend:latest
+            ghcr.io/${{ github.repository_owner }}/fq-frontend:${{ github.event.workflow_run.head_branch }}
