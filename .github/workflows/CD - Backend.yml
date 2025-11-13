@@ -39,4 +39,4 @@ jobs:
           file: ./FQ-Backend/Dockerfile
           push: true
           tags: |
-            ghcr.io/fq-backend:latest
+            ghcr.io/fontysict-553394/fq-backend:latest
