@@ -39,5 +39,5 @@ jobs:
           file: ./FQ-Backend/Dockerfile
           push: true
           tags: |
-            ghcr.io/${{ github.repository_owner }}/fq-backend:latest
-            ghcr.io/${{ github.repository_owner }}/fq-backend:${{ github.event.workflow_run.head_branch }}
+            ghcr.io/fq-backend:latest
+            ghcr.io/fq-backend:${{ github.event.workflow_run.head_branch }}
