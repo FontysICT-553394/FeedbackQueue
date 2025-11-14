@@ -14,6 +14,13 @@ import java.util.Date;
 import static io.jsonwebtoken.security.Keys.hmacShaKeyFor;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
+/**
+ * This utility class handles JWT token generation, validation and getting the ID again.
+ * This class must be injected with @Inject!
+ *
+ * @author Beau
+ * @see VerifyJwt
+ */
 @Singleton
 public class JwtUtil {
 
@@ -36,6 +43,11 @@ public class JwtUtil {
         return hmacShaKeyFor(secret.getBytes(UTF_8));
     }
 
+    /**
+     * Generates a JWT token for the given user ID.
+     * @param id The (user) ID to include in the token.
+     * @return The generated JWT token as a String.
+     */
     public String generateToken(String id) {
         Date now = new Date();
         Date exp = new Date(now.getTime() + expirationMs);
@@ -49,6 +61,11 @@ public class JwtUtil {
                 .compact();
     }
 
+    /**
+     * Extracts the user ID from the Authorization header.
+     * @param authorization The Authorization header containing the Bearer token.
+     * @return The user ID if the token is valid;
+     */
     public String getIdFromHeader(String authorization){
         if (authorization == null || !authorization.startsWith("Bearer ")) {
             return new Result<>(StatusCodes.UNAUTHORIZED).toJson();
@@ -58,6 +75,11 @@ public class JwtUtil {
         return getIdFromToken(token);
     }
 
+    /**
+     * Extracts the user ID from the JWT token.
+     * @param token The JWT token.
+     * @return The user ID if the token is valid;
+     */
     public String getIdFromToken(String token) {
         SecretKey key = getSigningKey();
         Claims claims = Jwts.parserBuilder()
@@ -68,6 +90,11 @@ public class JwtUtil {
         return claims.getSubject();
     }
 
+    /**
+     * Validates the JWT token.
+     * @param token The JWT token to validate.
+     * @return true if the token is valid; false otherwise.
+     */
     public boolean validateToken(String token) {
         try {
             SecretKey key = getSigningKey();
