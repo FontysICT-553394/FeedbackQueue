@@ -8,7 +8,7 @@ on:
 
 jobs:
   deploy:
-    # This job will only run if the CI succeeded AND the branch is a release branch
+    # Only run if CI succeeded and the branch is a release branch
     if: >
       github.event.workflow_run.conclusion == 'success' &&
       startsWith(github.event.workflow_run.head_branch, 'release/')
@@ -39,5 +39,4 @@ jobs:
           file: ./FQ-Backend/Dockerfile
           push: true
           tags: |
-            ghcr.io/${{ github.repository_owner }}/fq-backend:latest
-            ghcr.io/${{ github.repository_owner }}/fq-backend:${{ github.event.workflow_run.head_branch }}
+            ghcr.io/fontysict-553394/fq-backend:latest
