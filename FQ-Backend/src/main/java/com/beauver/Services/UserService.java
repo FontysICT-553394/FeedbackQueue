@@ -22,7 +22,7 @@ public class UserService {
         }
 
         User foundUser = userRepo.find("email", user.email).firstResult();
-        return getJwtToken(foundUser.id.toString());
+        return getJwtToken(String.valueOf(foundUser.id));
     }
 
     public boolean register(User user){

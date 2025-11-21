@@ -7,8 +7,12 @@ export default defineNuxtPlugin(() => {
     })
 
     api.interceptors.request.use(config => {
-        const token = localStorage.getItem('accessToken')
-        if (token) config.headers.Authorization = `Bearer ${token}`
+        if (import.meta.client) {
+            const token = localStorage.getItem('accessToken')
+            if (token) {
+                config.headers.Authorization = `Bearer ${token}`
+            }
+        }
         return config
     })
 
@@ -17,17 +21,34 @@ export default defineNuxtPlugin(() => {
         async error => {
             const originalRequest = error.config
 
-            if (error.response?.status === 401 && !originalRequest._retry) {
+            if (error.response?.status === 401 && !originalRequest._retry && import.meta.client) {
                 originalRequest._retry = true
                 const refreshToken = localStorage.getItem('refreshToken')
-                const res = await axios.post(url +'/users/refresh', { refreshToken })
 
-                localStorage.setItem('accessToken', res.data.data.accessToken)
-                localStorage.setItem('refreshToken', res.data.data.refreshToken)
-                console.log("refreshed tokens")
-                originalRequest.headers.Authorization = `Bearer ${res.data.accessToken}`
-                console.log("retried original request")
-                return api(originalRequest)
+                if (!refreshToken) {
+                    navigateTo('/account/login')
+                    return Promise.reject(error)
+                }
+
+                try {
+                    const res = await axios.post(url + '/users/refresh', { refreshToken })
+
+                    if (res.data?.data?.accessToken && res.data?.data?.refreshToken) {
+                        localStorage.setItem('accessToken', res.data.data.accessToken)
+                        localStorage.setItem('refreshToken', res.data.data.refreshToken)
+                        console.log("refreshed tokens")
+                        originalRequest.headers.Authorization = `Bearer ${res.data.data.accessToken}`
+                        console.log("retried original request")
+                        return api(originalRequest)
+                    } else {
+                        throw new Error('Invalid token response')
+                    }
+                } catch (refreshError) {
+                    localStorage.removeItem('accessToken')
+                    localStorage.removeItem('refreshToken')
+                    navigateTo('/account/login')
+                    return Promise.reject(refreshError)
+                }
             }
 
             return Promise.reject(error)

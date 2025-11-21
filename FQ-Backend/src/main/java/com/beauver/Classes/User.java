@@ -1,16 +1,32 @@
 package com.beauver.Classes;
 
 import com.beauver.Enums.Role;
+import com.google.gson.annotations.Expose;
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import jakarta.persistence.*;
 
 @Table(name = "users")
 @Entity
 public class User extends PanacheEntity {
+
+    @Expose
+    public long id;
+
+    @Expose
     public String name;
+
+    @Expose
     public String email;
+
+    @Expose
     public String password;
 
+    @ManyToOne
+    @JoinColumn(name = "class_id")
+    @Expose(serialize = false, deserialize = false)
+    public Class classEntity;
+
+    @Expose
     @Enumerated(EnumType.STRING)
     public Role role;
 
