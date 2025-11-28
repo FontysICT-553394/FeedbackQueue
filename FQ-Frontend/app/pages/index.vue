@@ -38,6 +38,7 @@ onMounted(async () => {
       </div>
       <div v-else class="action-buttons">
         <NuxtLink to="/queue/teachersList" class="btn btn-primary">Teachers List</NuxtLink>
+        <NuxtLink to="/queue/queueList" class="btn btn-primary">Joined Queues</NuxtLink>
         <NuxtLink to="/queue/classList" class="btn btn-secondary">Class List</NuxtLink>
       </div>
 

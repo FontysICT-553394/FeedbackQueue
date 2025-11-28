@@ -1,6 +1,6 @@
 package com.beauver.Endpoints;
 
-import com.beauver.Classes.Result;
+import com.beauver.Classes.User;
 import com.beauver.Security.JwtUtil;
 import com.beauver.Security.VerifyJwt;
 import com.beauver.Services.QueueService;
@@ -28,8 +28,67 @@ public class QueueAPI {
     @RunOnVirtualThread
     public String joinQueue(@HeaderParam("Authorization") String authorization, @PathParam("teacherId") Long teacherId) {
         String userId = jwtUtil.getIdFromHeader(authorization);
+        User user = User.findById(userId);
+        long classId = user.classEntity.id;
 
-        return queueService.joinQueue(userId, teacherId).toJson();
+        return queueService.joinQueue(userId, teacherId, classId).toJson();
+    }
+
+    @POST
+    @VerifyJwt
+    @Path("/leaveByTeacherId/{teacherId}")
+    @Transactional
+    @RunOnVirtualThread
+    public String leaveQueue(@HeaderParam("Authorization") String authorization, @PathParam("teacherId") Long teacherId) {
+        String userId = jwtUtil.getIdFromHeader(authorization);
+        User user = User.findById(userId);
+        long classId = user.classEntity.id;
+
+        return queueService.leaveQueue(userId, teacherId, classId).toJson();
+    }
+
+    @POST
+    @VerifyJwt
+    @Path("/leaveByQueueId/{queueId}")
+    @Transactional
+    @RunOnVirtualThread
+    public String leaveQueueByQueueId(@HeaderParam("Authorization") String authorization, @PathParam("queueId") Long queueId) {
+        String userId = jwtUtil.getIdFromHeader(authorization);
+
+        return queueService.leaveQueueByQueueId(userId, queueId).toJson();
+    }
+
+    @POST
+    @VerifyJwt
+    @Path("/getQueueByTeacherId/{teacherId}")
+    @Transactional
+    @RunOnVirtualThread
+    public String getQueueByTeacherId(@HeaderParam("Authorization") String authorization, @PathParam("teacherId") Long teacherId) {
+        String userId = jwtUtil.getIdFromHeader(authorization);
+        User user = User.findById(userId);
+        long classId = user.classEntity.id;
+
+        return queueService.getQueueByTeacherId(teacherId, classId).toJson();
+    }
+
+    @GET
+    @VerifyJwt
+    @Path("/getQueueById/{queueId}")
+    @Transactional
+    @RunOnVirtualThread
+    public String getQueueById(@PathParam("queueId") Long queueId) {
+        return queueService.getQueueByQueueId(queueId).toJson();
+    }
+
+    @GET
+    @VerifyJwt
+    @Path("/getYourQueues")
+    @Transactional
+    @RunOnVirtualThread
+    public String getYourQueues(@HeaderParam("Authorization") String authorization) {
+        String userId = jwtUtil.getIdFromHeader(authorization);
+
+        return queueService.getYourQueues(userId).toJson();
     }
 
 }

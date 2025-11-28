@@ -3,22 +3,22 @@ package com.beauver.Classes;
 import com.beauver.Enums.Role;
 import com.google.gson.annotations.Expose;
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
+import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.*;
 
 @Table(name = "users")
 @Entity
-public class User extends PanacheEntity {
+public class User extends PanacheEntityBase {
 
+    @Id
     @Expose
-    public long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    public Long id;
 
     @Expose
     public String name;
 
-    @Expose
     public String email;
-
-    @Expose
     public String password;
 
     @ManyToOne

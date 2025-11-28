@@ -24,6 +24,8 @@ dependencies {
     implementation("org.projectlombok:lombok:0.11.0")
     implementation("io.quarkus:quarkus-elytron-security-jdbc")
 
+    testImplementation("io.quarkus:quarkus-jdbc-h2")
+
     implementation(enforcedPlatform("${quarkusPlatformGroupId}:${quarkusPlatformArtifactId}:${quarkusPlatformVersion}"))
     implementation("io.quarkus:quarkus-arc")
     implementation("io.quarkus:quarkus-rest")

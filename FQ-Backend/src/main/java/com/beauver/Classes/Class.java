@@ -2,15 +2,19 @@ package com.beauver.Classes;
 
 import com.google.gson.annotations.Expose;
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
+import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.*;
 
 import java.util.List;
 
 @Entity
 @Table(name = "classes")
-public class Class extends PanacheEntity {
+public class Class extends PanacheEntityBase {
+
+    @Id
     @Expose
-    public long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    public Long id;
 
     @Expose
     public String name;
