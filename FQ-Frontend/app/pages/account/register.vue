@@ -53,7 +53,6 @@ const { username, email, password, error, success, handleSubmit } = Register()
 
       <div class="register-footer">
         <NuxtLink to="/account/login" class="link">Already have an account? Sign in</NuxtLink>
-        <NuxtLink to="/" class="link">Back to Home</NuxtLink>
       </div>
     </div>
   </div>

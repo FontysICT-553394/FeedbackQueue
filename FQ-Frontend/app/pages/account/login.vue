@@ -42,7 +42,6 @@ const { email, password, error, success, handleSubmit } = Login()
 
       <div class="login-footer">
         <NuxtLink to="/account/register" class="link">Don't have an account? Register</NuxtLink>
-        <NuxtLink to="/" class="link">Back to Home</NuxtLink>
       </div>
     </div>
   </div>
