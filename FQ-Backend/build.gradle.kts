@@ -1,6 +1,7 @@
 plugins {
     java
     id("io.quarkus")
+    id("org.sonarqube") version "7.1.0.6387"
 }
 
 repositories {
@@ -47,4 +48,11 @@ tasks.withType<Test> {
 tasks.withType<JavaCompile> {
     options.encoding = "UTF-8"
     options.compilerArgs.add("-parameters")
+}
+
+sonar {
+    properties {
+        property("sonar.projectKey", "FontysICT-553394_FeedbackQueue")
+        property("sonar.organization", "fontysict-553394")
+    }
 }
