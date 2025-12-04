@@ -4,6 +4,7 @@ import com.beauver.Classes.AuthTokens;
 import com.beauver.Classes.RefreshRequest;
 import com.beauver.Classes.Result;
 import com.beauver.Classes.User;
+import com.beauver.Enums.Role;
 import com.beauver.Enums.StatusCodes;
 import com.beauver.Security.JwtUtil;
 import com.beauver.Security.VerifyJwt;
@@ -14,13 +15,8 @@ import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
+import java.util.List;
 
-/**
- * This endpoint handles user login, registration, and retrieval
- *
- * @author Beau
- * @see UserService
- */
 @Path("/api/users")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
@@ -94,6 +90,46 @@ public class UserAPI {
         }
 
         return new Result<>(StatusCodes.CREATED).toJson();
+    }
+
+    @GET
+    @VerifyJwt
+    @Path("/getAllTeachers")
+    @RunOnVirtualThread
+    public String getAllTeachers() {
+        List<User> teachers = User.list("role", Role.TEACHER);
+
+        for (User teacher : teachers) {
+            teacher.password = null;
+            teacher.email = null;
+        }
+
+        return new Result<>(StatusCodes.OK, teachers).toJson();
+    }
+
+    @GET
+    @VerifyJwt
+    @Path("/getAllYourTeachers")
+    @RunOnVirtualThread
+    public String getAllYourTeachers(@HeaderParam("Authorization") String authorization) {
+        String userId = jwtUtil.getIdFromHeader(authorization);
+
+        User student = User.findById(userId);
+        if(student.classEntity == null){
+            return new Result<>(StatusCodes.NOT_FOUND, "User is not assigned to any class").toJson();
+        }
+
+        var teachers = User.getEntityManager()
+                .createNativeQuery("SELECT u.* FROM users u INNER JOIN class_teachers ct ON u.id = ct.teacher_id WHERE ct.class_id = ?1", User.class)
+                .setParameter(1, student.classEntity.id)
+                .getResultList();
+
+        for (User teacher : (List<User>) teachers) {
+            teacher.password = null;
+            teacher.email = null;
+        }
+
+        return new Result<>(StatusCodes.OK, teachers).toJson();
     }
 
     @GET

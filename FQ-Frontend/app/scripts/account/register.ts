@@ -26,11 +26,12 @@ export function Register() {
             }
         })
 
-        if(data.value?.status == 200) {
+        if(data.data?.status == 201) {
             success.value = true
-            console.log('Success:', data.value)
+            navigateTo('/account/login')
+            console.log('Success:', data.data)
         }else{
-            error.value = data.value?.error || 'Registration failed'
+            error.value = data.data?.error || 'Registration failed'
         }
     }
 

@@ -1,4 +1,4 @@
-package com.beauver;
+package com.beauver.tests.API;
 
 import io.quarkus.test.junit.QuarkusTest;
 import org.junit.jupiter.api.Test;

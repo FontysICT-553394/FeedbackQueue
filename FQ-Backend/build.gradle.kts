@@ -1,6 +1,7 @@
 plugins {
     java
     id("io.quarkus")
+    id("org.sonarqube") version "7.1.0.6387"
 }
 
 repositories {
@@ -24,6 +25,8 @@ dependencies {
     implementation("org.projectlombok:lombok:0.11.0")
     implementation("io.quarkus:quarkus-elytron-security-jdbc")
 
+    testImplementation("io.quarkus:quarkus-jdbc-h2")
+
     implementation(enforcedPlatform("${quarkusPlatformGroupId}:${quarkusPlatformArtifactId}:${quarkusPlatformVersion}"))
     implementation("io.quarkus:quarkus-arc")
     implementation("io.quarkus:quarkus-rest")
@@ -45,4 +48,11 @@ tasks.withType<Test> {
 tasks.withType<JavaCompile> {
     options.encoding = "UTF-8"
     options.compilerArgs.add("-parameters")
+}
+
+sonar {
+    properties {
+        property("sonar.projectKey", "FontysICT-553394_FeedbackQueue")
+        property("sonar.organization", "fontysict-553394")
+    }
 }

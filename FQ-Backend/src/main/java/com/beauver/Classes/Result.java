@@ -2,11 +2,16 @@ package com.beauver.Classes;
 
 import com.beauver.Enums.StatusCodes;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.annotations.Expose;
 
 public class Result<T> {
 
+    @Expose
     private int status;
+    @Expose
     private String error;
+    @Expose
     private T data;
 
     public Result(int status, String error, T data) {
@@ -33,7 +38,12 @@ public class Result<T> {
 
 
     public String toJson(){
-        return new Gson().toJson(this);
+
+        Gson gson = new GsonBuilder()
+                .excludeFieldsWithoutExposeAnnotation()
+                .create();
+
+        return gson.toJson(this);
     }
 
 }

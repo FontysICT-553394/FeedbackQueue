@@ -3,17 +3,46 @@ import {Login} from "~/scripts/account/login";
 
 const { email, password, error, success, handleSubmit } = Login()
 </script>
+<style src="~/css/account/login.css" scoped></style>
 
 <template>
-  <h1>Login</h1>
+  <div class="login-container">
+    <div class="login-card">
+      <h1 class="login-title">Welcome Back</h1>
+      <p class="login-subtitle">Sign in to your account</p>
 
-  <form @submit="handleSubmit">
-    <input v-model="email" type="email" placeholder="Email" />
-    <input v-model="password" type="password" placeholder="Password" />
+      <form @submit="handleSubmit" class="login-form">
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input
+              id="email"
+              v-model="email"
+              type="email"
+              placeholder="Enter your email"
+              required
+          />
+        </div>
 
-    <button type="submit">Login</button>
-  </form>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input
+              id="password"
+              v-model="password"
+              type="password"
+              placeholder="Enter your password"
+              required
+          />
+        </div>
 
-  <p v-if="error" class="error">{{ error }}</p>
-  <p v-if="success" class="success">Logged in!</p>
+        <button type="submit" class="login-button">Sign In</button>
+      </form>
+
+      <p v-if="error" class="message error">{{ error }}</p>
+      <p v-if="success" class="message success">Logged in successfully!</p>
+
+      <div class="login-footer">
+        <NuxtLink to="/account/register" class="link">Don't have an account? Register</NuxtLink>
+      </div>
+    </div>
+  </div>
 </template>

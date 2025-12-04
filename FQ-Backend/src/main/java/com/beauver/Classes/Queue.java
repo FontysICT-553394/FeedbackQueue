@@ -1,16 +1,32 @@
 package com.beauver.Classes;
 
-import io.quarkus.hibernate.orm.panache.PanacheEntity;
+import com.google.gson.annotations.Expose;
+import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.*;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(name = "queues")
-public class Queue extends PanacheEntity {
+public class Queue extends PanacheEntityBase {
+
+    @Id
+    @Expose
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    public Long id;
+
+    @Expose
     public String name;
 
-    @OneToMany
-    public List<User> users = new ArrayList<>();
+    @Expose
+    @ManyToOne
+    @JoinColumn(name = "teacher_id", nullable = false)
+    public User teacher;
+
+    @Expose
+    @ManyToOne
+    @JoinColumn(name = "class_id", nullable = false)
+    public Class classEntity;
+
+    @Expose
+    @Column(nullable = false)
+    public boolean isEnabled = true;
 }

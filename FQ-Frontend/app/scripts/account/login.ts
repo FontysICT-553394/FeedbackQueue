@@ -12,6 +12,9 @@ export function Login() {
         e.preventDefault()
         error.value = null
 
+        localStorage.removeItem('accessToken')
+        localStorage.removeItem('refreshToken')
+
         try {
             const response: any = await $api.post("users/logIn", {
                 email: email.value,
@@ -20,11 +23,25 @@ export function Login() {
 
             if (response?.status === 200) {
                 success.value = true
-
                 const tokens = response.data.data
 
-                localStorage.setItem('accessToken', tokens.accessToken)
-                localStorage.setItem('refreshToken', tokens.refreshToken)
+                if (tokens?.accessToken) {
+                    localStorage.setItem('accessToken', tokens.accessToken)
+                }else{
+                    error.value = response?.data?.error || 'Login failed'
+                    success.value = false
+                }
+
+                if (tokens?.refreshToken) {
+                    localStorage.setItem('refreshToken', tokens.refreshToken)
+                }else{
+                    error.value = response?.data?.error || 'Login failed'
+                    success.value = false
+                }
+
+                if(success.value){
+                    navigateTo('/')
+                }
             } else {
                 error.value = response?.data?.error || 'Login failed'
             }
