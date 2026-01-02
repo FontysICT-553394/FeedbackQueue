@@ -1,6 +1,10 @@
 package com.beauver.Endpoints;
 
+import com.beauver.Classes.Queue;
+import com.beauver.Classes.QueueUser;
+import com.beauver.Classes.Result;
 import com.beauver.Classes.User;
+import com.beauver.Enums.StatusCodes;
 import com.beauver.Security.JwtUtil;
 import com.beauver.Security.VerifyJwt;
 import com.beauver.Services.QueueService;
@@ -9,6 +13,8 @@ import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
+
+import java.util.Map;
 
 @Path("/api/queue")
 @Produces(MediaType.APPLICATION_JSON)
@@ -21,6 +27,9 @@ public class QueueAPI {
     @Inject
     QueueService queueService;
 
+    @Inject
+    QueueEventsAPI queueEventsAPI;
+
     @POST
     @VerifyJwt
     @Path("/join/{teacherId}")
@@ -31,7 +40,24 @@ public class QueueAPI {
         User user = User.findById(userId);
         long classId = user.classEntity.id;
 
-        return queueService.joinQueue(userId, teacherId, classId).toJson();
+        if(queueService.isInQueue(userId, teacherId, classId)){
+            return new Result<>(StatusCodes.FORBIDDEN, "You are already in this queue.").toJson();
+        }
+
+        Queue queue = queueService.findQueueByTeacherAndClass(teacherId, classId);
+        if(queue == null || !queue.isEnabled){
+            return new Result<>(StatusCodes.FORBIDDEN, "Queue is not available/open").toJson();
+        }
+
+        Result<?> result = queueService.joinQueue(userId, teacherId, classId);
+
+        queueEventsAPI.broadcastQueueUpdate(queue.id, "user_joined_queue", Map.of(
+                "userId", userId,
+                "userName", user.name,
+                "queueId", queue.id
+        ));
+
+        return result.toJson();
     }
 
     @POST
@@ -44,6 +70,14 @@ public class QueueAPI {
         User user = User.findById(userId);
         long classId = user.classEntity.id;
 
+        Queue queue = queueService.findQueueByTeacherAndClass(teacherId, classId);
+
+        queueEventsAPI.broadcastQueueUpdate(queue.id, "user_left_queue", Map.of(
+                "userId", userId,
+                "userName", user.name,
+                "queueId", queue.id
+        ));
+
         return queueService.leaveQueue(userId, teacherId, classId).toJson();
     }
 
@@ -54,6 +88,13 @@ public class QueueAPI {
     @RunOnVirtualThread
     public String leaveQueueByQueueId(@HeaderParam("Authorization") String authorization, @PathParam("queueId") Long queueId) {
         String userId = jwtUtil.getIdFromHeader(authorization);
+        User user = User.findById(userId);
+
+        queueEventsAPI.broadcastQueueUpdate(queueId, "user_left_queue", Map.of(
+                "userId", userId,
+                "userName", user.name,
+                "queueId", queueId
+        ));
 
         return queueService.leaveQueueByQueueId(userId, queueId).toJson();
     }
