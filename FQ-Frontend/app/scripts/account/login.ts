@@ -22,25 +22,17 @@ export function Login() {
             })
 
             if (response?.status === 200) {
-                success.value = true
                 const tokens = response.data.data
 
-                if (tokens?.accessToken) {
+                if (tokens?.accessToken && tokens?.refreshToken) {
                     localStorage.setItem('accessToken', tokens.accessToken)
-                }else{
-                    error.value = response?.data?.error || 'Login failed'
-                    success.value = false
-                }
-
-                if (tokens?.refreshToken) {
                     localStorage.setItem('refreshToken', tokens.refreshToken)
-                }else{
-                    error.value = response?.data?.error || 'Login failed'
-                    success.value = false
-                }
 
-                if(success.value){
-                    navigateTo('/')
+                    success.value = true
+                    await navigateTo('/')
+                } else {
+                    error.value = response?.data?.error || 'Login failed: Missing tokens'
+                    success.value = false
                 }
             } else {
                 error.value = response?.data?.error || 'Login failed'
