@@ -31,7 +31,7 @@ onMounted(async() => {
     <section class="hero-section">
       <h1 class="hero-title">Welcome to the Feedback Queue</h1>
 
-      <p v-if="success === false" class="hero-subtitle">Enroll in a class and join your teachers queue and wait for feedback!</p>
+      <p v-if="isLoggedIn === false" class="hero-subtitle">Enroll in a class and join your teachers queue and wait for feedback!</p>
       <p v-else class="hero-subtitle">
         You are enrolled in: {{ className }} <br>
         Join your teachers queue and wait for feedback!

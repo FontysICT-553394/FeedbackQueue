@@ -2,14 +2,18 @@
 import {onMounted, ref} from "vue";
 import {useQueueList} from "~/scripts/queue/queueList";
 import {useRoute} from "vue-router";
+import {useQueueEvents} from "~/composables/useQueueEvents";
 
 const route = useRoute();
 const { queueDetails, getQueueInformation, error, loading } = useQueueList();
 
 onMounted(async () => {
   const queueId = route.query.queueId as string;
+  const { connectQueueEvent, disconnectQueueEvent, isConnected } = useQueueEvents(ref(queueId));
+
   if (queueId) {
     const data = await getQueueInformation(queueId);
+    connectQueueEvent();
     if (data) {
       queueDetails.value = data;
     }

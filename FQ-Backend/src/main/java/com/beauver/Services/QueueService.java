@@ -143,7 +143,7 @@ public class QueueService {
         return new Result<>(StatusCodes.OK, queues);
     }
 
-    private boolean isInQueue(String userId, long teacherId, long classId){
+    public boolean isInQueue(String userId, long teacherId, long classId){
         return entityManager.createQuery(
                         "SELECT COUNT(qu) > 0 FROM QueueUser qu " +
                                 "WHERE qu.queue.teacher.id = :teacherId " +
@@ -171,7 +171,7 @@ public class QueueService {
                 .orElse(null);
     }
 
-    private Queue findQueueByTeacherAndClass(long teacherId, long classId){
+    public Queue findQueueByTeacherAndClass(long teacherId, long classId){
         return entityManager.createQuery(
                         "SELECT q FROM Queue q " +
                                 "WHERE q.teacher.id = :teacherId " +
