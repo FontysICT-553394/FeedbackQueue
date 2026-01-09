@@ -34,7 +34,8 @@ public class JwtTests {
     @CsvSource({
             "12345",
             "67890",
-            "999"
+            "999",
+            "Test"
     })
     public void testGetIdFromToken_Success(String userId) {
         // Arrange
